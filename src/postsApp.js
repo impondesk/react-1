@@ -12,6 +12,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
+// https://tanstack.com/query/v4/docs/react/examples/react/basic
 
 export default function PostsApp() {
 
@@ -23,19 +24,19 @@ export default function PostsApp() {
         <>
             <QueryClientProvider client={queryClient}>
 
-                <div class="overflow-hidden">
-                    <div class="px-4 py-5 sm:px-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Posts</h3>
-                        <p class="mt-1 max-w-7xl text-sm text-gray-500">
-                        <Posts setPostId={setPostId} />
+                <div className="overflow-hidden">
+                    <div className="px-4 py-5 sm:px-6">
+                        <h3 className="text-lg font-medium leading-6 text-gray-900">Posts</h3>
+                        <p className="mt-1 max-w-7xl text-sm text-gray-500">
+                            {/* <Posts setPostId={setPostId} /> */}
+                            {postId > -1 ? (
+                                <Post postId={postId} setPostId={setPostId} />
+                            ) : (
+                                <Posts setPostId={setPostId} />
+                            )}
                         </p>
                     </div>
                 </div>
-
-                <div class="max-w-7xl">
-                    
-                </div>
-
 
             </QueryClientProvider>
         </>
@@ -48,7 +49,7 @@ function usePosts() {
         queryKey: ["posts"],
         queryFn: async () => {
             const { data } = await axios.get(
-                "https://jsonplaceholder.typicode.com/posts/?_limit=3"
+                "https://jsonplaceholder.typicode.com/posts/?_limit=10"
             );
             return data;
         },
@@ -70,7 +71,7 @@ function Posts({ setPostId }) {
                     <>
                         <div>
                             {data.map((post) => (
-                                <p key={post.id} className="flex items-center justify-between py-2 pl-0 pr-0 text-md">
+                                <p key={post.id} className="flex items-center justify-between py-1 pl-0 pr-0 text-md">
                                     <a
                                         onClick={() => setPostId(post.id)}
                                         href="#"
@@ -94,6 +95,55 @@ function Posts({ setPostId }) {
                     </>
                 )}
             </div>
+        </div>
+    );
+}
+
+
+
+
+
+const getPostById = async (id) => {
+    const { data } = await axios.get(
+        `https://jsonplaceholder.typicode.com/posts/${id}`
+    );
+    return data;
+};
+
+function usePost(postId) {
+    console.log(postId);
+
+    return useQuery({
+        queryKey: ["post", postId],
+        queryFn: () => getPostById(postId),
+        enabled: !!postId,
+    });
+}
+
+function Post({ postId, setPostId }) {
+    const { status, data, error, isFetching } = usePost(postId);
+
+    return (
+        <div className="flex items-center justify-between py-1 pl-0 pr-0 text-md">
+            <div>
+                <a onClick={() => setPostId(-1)} href="#">
+                    Back
+                </a>
+            </div>
+            {!postId || status === "loading" ? (
+                "Loading..."
+            ) : status === "error" ? (
+                <span>Error: {error.message}</span>
+            ) : (
+                <>
+                    <span>he;llo!</span>
+                    <h1>{data.title}</h1>
+                    <div>
+                        <p>{data.body}</p>
+                    </div>
+                    <div>{isFetching ? "Background Updating..." : " "}</div>
+                </>
+            )}
         </div>
     );
 }
