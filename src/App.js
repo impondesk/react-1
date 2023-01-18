@@ -14,10 +14,18 @@ import Nav from './nav';
 import Page from './Page';
 import TodoApp from './todoApp'
 import PostsApp from './postsApp';
+import React from 'react';
+import Counter from './counter';
+
+
+export const UserContext = React.createContext();
+
 
 function App() {
 
   return (
+
+    <UserContext.Provider user="impondesk">
 
     <HashRouter>
       {/* <div className="App">
@@ -49,7 +57,9 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
+            {/* <Route path="/context" element={<Context />} /> */}
             <Route path="/page" element={<Page />} />
+            <Route path="/counter" element={<Counter />} />
             <Route path="/todo" element={<TodoApp />} />
             <Route path="/posts" element={<PostsApp />} />
           </Routes>
@@ -58,6 +68,8 @@ function App() {
       </div>
 
     </HashRouter>
+
+    </UserContext.Provider>
   );
 }
 
