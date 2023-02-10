@@ -7,7 +7,7 @@ function Counter() {
 
 	return (
 		<>
-			<div>Counter Value = {count}</div>
+			<div>The value of Counter is {count}</div>
 
 			<a className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded' onClick={() => {
 				setCount(count+1);
